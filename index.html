@@ -44,7 +44,13 @@
         }
 
         #res-name { font-size: 5.5rem; font-weight: 900; color: white; margin: 15px 0; text-shadow: 0 0 20px var(--primary-blue); }
-        #flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 1500; }
+
+        /* 섬광 효과 수정: 부분적으로 약하게 (Opacity 조절) */
+        #flash { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%); 
+            opacity: 0; pointer-events: none; z-index: 1500; transition: opacity 0.1s;
+        }
         
         .btn-main { background: var(--deep-blue); color: white; border: none; padding: 12px 40px; font-size: 1.3rem; border-radius: 50px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
         .btn-main:hover { transform: scale(1.05); background: var(--primary-blue); color: black; }
@@ -81,22 +87,27 @@
 </div>
 
 <script>
+    // 명단 데이터 (이곳에 복사해서 넣으세요)
     const rawData = [
-        { "grade": 6, "class": 1, "name": "김지성" }, { "grade": 4, "class": 1, "name": "김승하" }, { "grade": 4, "class": 1, "name": "김유하" }, { "grade": 4, "class": 1, "name": "박효진" },
-        { "grade": 3, "class": 1, "name": "김단비" }, { "grade": 3, "class": 1, "name": "김태건" }, { "grade": 3, "class": 1, "name": "정윤서" }, { "grade": 2, "class": 1, "name": "김윤서" },
-        { "grade": 2, "class": 1, "name": "배경은" }, { "grade": 2, "class": 1, "name": "최시원" }, { "grade": 2, "class": 1, "name": "장도원" }, { "grade": 1, "class": 1, "name": "권혜아" },
-        { "grade": 1, "class": 1, "name": "유채윤" }, { "grade": 1, "class": 1, "name": "윤소명" }, { "grade": 1, "class": 1, "name": "이진서" }, { "grade": 1, "class": 1, "name": "임채하" },
-        { "grade": 1, "class": 1, "name": "정진주" }, { "grade": 6, "class": 2, "name": "김재형" }, { "grade": 4, "class": 2, "name": "강효빈" }, { "grade": 4, "class": 2, "name": "문유건" },
-        { "grade": 4, "class": 2, "name": "윤소현" }, { "grade": 2, "class": 2, "name": "김서진" }, { "grade": 2, "class": 2, "name": "박유빈" }, { "grade": 1, "class": 2, "name": "공예은" },
-        { "grade": 1, "class": 2, "name": "문승윤" }, { "grade": 1, "class": 2, "name": "성하연" }, { "grade": 6, "class": 3, "name": "김주영" }, { "grade": 6, "class": 3, "name": "이준연" },
-        { "grade": 4, "class": 3, "name": "강민혁" }, { "grade": 4, "class": 3, "name": "권준영" }, { "grade": 4, "class": 3, "name": "성호연" }, { "grade": 4, "class": 3, "name": "정진양" },
-        { "grade": 3, "class": 3, "name": "엄다애" }, { "grade": 3, "class": 3, "name": "이시현" }, { "grade": 2, "class": 3, "name": "배유찬" }, { "grade": 2, "class": 3, "name": "서하린" },
-        { "grade": 2, "class": 3, "name": "박하진" }, { "grade": 1, "class": 3, "name": "강수영" }, { "grade": 1, "class": 3, "name": "권서윤" }, { "grade": 1, "class": 3, "name": "김지민" },
-        { "grade": 1, "class": 3, "name": "심민하" }, { "grade": 1, "class": 3, "name": "하영진" }, { "grade": 4, "class": 4, "name": "문성원" }, { "grade": 4, "class": 4, "name": "손승현" },
-        { "grade": 4, "class": 4, "name": "임효린" }, { "grade": 3, "class": 4, "name": "양윤슬" }, { "grade": 3, "class": 4, "name": "이서린" }, { "grade": 3, "class": 4, "name": "채준하" },
-        { "grade": 2, "class": 4, "name": "김승주" }, { "grade": 2, "class": 4, "name": "정세양" }, { "grade": 2, "class": 4, "name": "신서아" }, { "grade": 2, "class": 4, "name": "정시환" },
-        { "grade": 1, "class": 4, "name": "권예은" }, { "grade": 1, "class": 4, "name": "김가을" }, { "grade": 1, "class": 4, "name": "서하진" }, { "grade": 1, "class": 4, "name": "손주은" },
-        { "grade": 1, "class": 4, "name": "이로휘" }
+  { "grade": 6, "class": 1, "name": "김지성" },  { "grade": 4, "class": 1, "name": "김승하" },  { "grade": 4, "class": 1, "name": "김유하" },  { "grade": 4, "class": 1, "name": "박효진" },
+  { "grade": 3, "class": 1, "name": "김단비" },  { "grade": 3, "class": 1, "name": "김태건" },  { "grade": 3, "class": 1, "name": "정윤서" },  { "grade": 2, "class": 1, "name": "김윤서" },
+  { "grade": 2, "class": 1, "name": "배경은" },  { "grade": 2, "class": 1, "name": "최시원" },  { "grade": 2, "class": 1, "name": "장도원" },  { "grade": 1, "class": 1, "name": "권혜아" },
+  { "grade": 1, "class": 1, "name": "유채윤" },  { "grade": 1, "class": 1, "name": "윤소명" },  { "grade": 1, "class": 1, "name": "이진서" },  { "grade": 1, "class": 1, "name": "임채하" },
+  { "grade": 1, "class": 1, "name": "정진주" },
+
+  { "grade": 6, "class": 2, "name": "김재형" },  { "grade": 4, "class": 2, "name": "강효빈" },  { "grade": 4, "class": 2, "name": "문유건" },  { "grade": 4, "class": 2, "name": "윤소현" },
+  { "grade": 2, "class": 2, "name": "김서진" },  { "grade": 2, "class": 2, "name": "박유빈" },  { "grade": 1, "class": 2, "name": "공예은" },  { "grade": 1, "class": 2, "name": "문승윤" },
+  { "grade": 1, "class": 2, "name": "성하연" },
+
+  { "grade": 6, "class": 3, "name": "김주영" },  { "grade": 6, "class": 3, "name": "이준연" },  { "grade": 4, "class": 3, "name": "강민혁" },  { "grade": 4, "class": 3, "name": "권준영" },
+  { "grade": 4, "class": 3, "name": "성호연" },  { "grade": 4, "class": 3, "name": "정진양" },  { "grade": 3, "class": 3, "name": "엄다애" },  { "grade": 3, "class": 3, "name": "이시현" },
+  { "grade": 2, "class": 3, "name": "배유찬" },  { "grade": 2, "class": 3, "name": "서하린" },  { "grade": 2, "class": 3, "name": "박하진" },  { "grade": 1, "class": 3, "name": "강수영" },
+  { "grade": 1, "class": 3, "name": "권서윤" },  { "grade": 1, "class": 3, "name": "김지민" },  { "grade": 1, "class": 3, "name": "심민하" },  { "grade": 1, "class": 3, "name": "하영진" },
+
+  { "grade": 4, "class": 4, "name": "문성원" },  { "grade": 4, "class": 4, "name": "손승현" },  { "grade": 4, "class": 4, "name": "임효린" },  { "grade": 3, "class": 4, "name": "양윤슬" },
+  { "grade": 3, "class": 4, "name": "이서린" },  { "grade": 3, "class": 4, "name": "채준하" },  { "grade": 2, "class": 4, "name": "김승주" },  { "grade": 2, "class": 4, "name": "정세양" },
+  { "grade": 2, "class": 4, "name": "신서아" },  { "grade": 2, "class": 4, "name": "정시환" },  { "grade": 1, "class": 4, "name": "권예은" },  { "grade": 1, "class": 4, "name": "김가을" },
+  { "grade": 1, "class": 4, "name": "서하진" },  { "grade": 1, "class": 4, "name": "손주은" },  { "grade": 1, "class": 4, "name": "이로휘" }
     ];
 
     let participants = [...rawData];
@@ -111,8 +122,9 @@
         if (participants.length === 0) return alert("추첨 완료!");
         if (document.getElementById('result-card').style.display === 'flex') return;
 
+        // 드럼: 1초 후에 한 번만 재생
         sndDrum.loop = false;
-            setTimeout(() => {
+        setTimeout(() => {
             sndDrum.currentTime = 0;
             sndDrum.play();
         }, 1000);
@@ -122,9 +134,9 @@
 
         const winner = participants.splice(Math.floor(Math.random() * participants.length), 1)[0];
         const box = document.getElementById('box');
-        
         box.style.animation = "shake 0.25s infinite"; 
 
+        // 글자 속도 가독성 있게 (2.5초 애니메이션)
         setTimeout(() => showStep(`${winner.class}분임`), 800);
         setTimeout(() => showStep(getGradeName(winner.grade)), 2300);
 
@@ -135,24 +147,24 @@
                 
                 setTimeout(() => {
                     const flash = document.getElementById('flash');
-                    flash.style.opacity = "1"; 
+                    // 섬광 효과: 0.5 정도로 약하게 번쩍임
+                    flash.style.opacity = "0.5"; 
                     
-                    sndFanfare.play(); // 팡파르 재생
+                    sndFanfare.play();
 
                     setTimeout(() => {
                         flash.style.opacity = "0";
                         box.style.opacity = "0";
                         showResult(winner);
-                    }, 200);
+                    }, 300); // 번쩍이는 시간 약간 조절
                 }, 1000); 
             }, 50);
-        }, 4000); // 전체 대기 시간을 약간 늘림
+        }, 4000);
     }
 
     function showStep(text) {
         const el = document.getElementById('popup-text');
         el.innerText = text;
-        // duration을 1.6s -> 2.5s로 늘려 더 천천히 지나가게 함
         el.animate([
             {transform:'translate(-50%, 30%)', opacity:0}, 
             {transform:'translate(-50%, -50%)', opacity:1, offset:0.2}, 
@@ -167,26 +179,22 @@
         document.getElementById('res-name').innerText = winner.name;
         card.style.display = 'flex';
         
+        // 쌍폭죽 연출
         confetti({ particleCount: 180, angle: 60, spread: 80, origin: { x: 0, y: 0.8 } });
         confetti({ particleCount: 180, angle: 120, spread: 80, origin: { x: 1, y: 0.8 } });
     }
 
-    // 포토부스 기능 (이미지 저장)
     function saveAsImage() {
         const card = document.getElementById('result-card');
         const name = document.getElementById('res-name').innerText;
-        
-        // 버튼들을 잠시 숨김 (이미지에 안 나오게)
         const buttons = card.querySelectorAll('button');
         buttons.forEach(b => b.style.display = 'none');
 
-        html2canvas(card, { backgroundColor: '#000' }).then(canvas => {
+        html2canvas(card, { backgroundColor: '#000', borderRadius: 40 }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `당첨자_${name}.png`;
+            link.download = `교제의밤_당첨_${name}.png`;
             link.href = canvas.toDataURL();
             link.click();
-            
-            // 버튼 복구
             buttons.forEach(b => b.style.display = 'block');
         });
     }
