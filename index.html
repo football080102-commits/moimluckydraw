@@ -16,87 +16,58 @@
         body {
             background-color: var(--dark-bg);
             background-image: radial-gradient(circle at center, #0a1931 0%, #030816 100%);
-            color: white;
-            font-family: 'Pretendard', sans-serif;
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
+            color: white; font-family: 'Pretendard', sans-serif;
+            margin: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; height: 100vh;
         }
 
-        /* 상단 UI 복구 */
         .top-ui {
-            position: absolute; top: 20px; width: 92%;
-            display: flex; justify-content: space-between; align-items: center; z-index: 100;
+            position: absolute; top: 20px; width: 92%; display: flex; justify-content: space-between; align-items: center; z-index: 100;
         }
 
         .main-title {
-            position: absolute; top: 8%;
-            font-size: 2.8rem; font-weight: 800;
-            color: white; text-shadow: 0 0 15px var(--primary-blue);
-            text-align: center; width: 100%; transition: opacity 1s;
+            position: absolute; top: 8%; font-size: 2.8rem; font-weight: 800;
+            color: white; text-shadow: 0 0 15px var(--primary-blue); text-align: center; width: 100%; transition: opacity 1s;
         }
 
         #main-stage {
-            position: relative; width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: flex-end; align-items: center;
-            padding-bottom: 12vh; /* 상자 하단 배치 */
+            position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 12vh;
         }
 
-        /* 상자: 점점 커지는 애니메이션 (회전 제거) */
+        /* 핵심: transition을 transform에 걸어 부드러운 확대/축소 구현 */
         #box {
             font-size: 140px; filter: drop-shadow(0 0 25px var(--deep-blue));
             cursor: pointer; z-index: 50;
-            transition: transform 2s ease-out, opacity 0.5s; /* 2초 동안 부드럽게 변화 */
+            transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s; 
         }
 
         #popup-text {
-            position: absolute; top: 42%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 6rem; font-weight: 900;
-            color: white; text-shadow: 0 0 30px var(--primary-blue);
-            opacity: 0; pointer-events: none; z-index: 5;
+            position: absolute; top: 42%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 6rem; font-weight: 900; color: white; text-shadow: 0 0 30px var(--primary-blue); opacity: 0; z-index: 5;
         }
 
-        /* 결과 카드 */
         #result-card {
-            display: none; position: absolute; top: 45%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px; height: 550px;
-            background: linear-gradient(145deg, #001f4d, #000);
-            border: 2px solid var(--primary-blue); border-radius: 40px;
-            box-shadow: 0 0 100px rgba(0, 210, 255, 0.6);
-            z-index: 1000; flex-direction: column; justify-content: center; align-items: center;
+            display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+            width: 400px; height: 550px; background: linear-gradient(145deg, #001f4d, #000);
+            border: 2px solid var(--primary-blue); border-radius: 40px; box-shadow: 0 0 100px rgba(0, 210, 255, 0.6); z-index: 1000;
+            flex-direction: column; justify-content: center; align-items: center;
         }
 
         #res-name { font-size: 4rem; font-weight: 900; color: white; margin: 20px 0; }
 
-        /* 포토부스 UI 복구 */
         #photo-booth {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 2000; flex-direction: row;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: row;
         }
         .photo-slot { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 1px solid #222; }
-        
-        .garland-modern {
-            position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
-            width: 80%; display: flex; justify-content: center; align-items: center;
-            gap: 30px; border-top: 1px solid var(--primary-blue); border-bottom: 1px solid var(--primary-blue);
-            padding: 20px 0; background: rgba(0, 210, 255, 0.05);
-        }
 
         #flash { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: radial-gradient(circle, white 0%, transparent 70%); 
-            opacity: 0; pointer-events: none; z-index: 1500; 
+            background: radial-gradient(circle, white 0%, transparent 70%); opacity: 0; pointer-events: none; z-index: 1500; 
         }
 
-        .btn-main {
-            background: var(--deep-blue); color: white; border: none; padding: 15px 45px;
-            font-size: 1.4rem; border-radius: 50px; cursor: pointer; margin-top: 25px;
+        .btn-main { background: var(--deep-blue); color: white; border: none; padding: 15px 45px; font-size: 1.4rem; border-radius: 50px; cursor: pointer; margin-top: 25px; }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg); } 25% { transform: rotate(-8deg); } 75% { transform: rotate(8deg); } 100% { transform: rotate(0deg); }
         }
     </style>
 </head>
@@ -126,7 +97,7 @@
 </div>
 
 <div id="photo-booth">
-    <div class="garland-modern">
+    <div style="position:absolute; top:60px; left:50%; transform:translateX(-50%); width:80%; display:flex; justify-content:center; align-items:center; gap:30px; border-top:1px solid var(--primary-blue); border-bottom:1px solid var(--primary-blue); padding:20px 0;">
         <span>✨</span><div style="font-size:2.5rem; font-weight:800; letter-spacing:15px; color:var(--primary-blue);">축하합니다</div><span>✨</span>
     </div>
     <div class="photo-slot" id="slot-0"></div>
@@ -162,7 +133,7 @@
     updateCounter();
 
     function startDraw() {
-        if (participants.length === 0) return alert("추첨 인원이 없습니다!");
+        if (participants.length === 0) return alert("추첨 완료!");
         document.getElementById('open-btn').style.visibility = 'hidden';
         document.getElementById('title-text').style.opacity = '0.2';
 
@@ -176,20 +147,22 @@
         setTimeout(() => showStep(`${winner.class}분임`), 1200);
         setTimeout(() => showStep(getGradeName(winner.grade)), 3800);
 
-        // 상자 피날레: 2초 동안 점진적으로 1/5 크기(scale 2.0)로 커짐
+        // 핵심 연출: 흔들림 끄고 -> 0.05초 뒤에 커지기 명령 전달
         setTimeout(() => {
-            box.style.animation = "none";
-            box.style.transform = "translateY(-15vh) scale(2.0)"; // 점진적으로 커짐
-            
+            box.style.animation = "none"; 
             setTimeout(() => {
-                const flash = document.getElementById('flash');
-                flash.style.opacity = "1"; 
+                box.style.transform = "translateY(-15vh) scale(2.0)"; 
+                
                 setTimeout(() => {
-                    flash.style.opacity = "0";
-                    box.style.opacity = "0";
-                    showResult(winner);
-                }, 400);
-            }, 2000); // 2초 대기 후 섬광
+                    const flash = document.getElementById('flash');
+                    flash.style.opacity = "1"; 
+                    setTimeout(() => {
+                        flash.style.opacity = "0";
+                        box.style.opacity = "0";
+                        showResult(winner);
+                    }, 400);
+                }, 2000); // 2초간 부드럽게 커진 뒤 섬광
+            }, 50);
         }, 5500);
     }
 
@@ -205,7 +178,7 @@
         document.getElementById('res-grade').innerText = getGradeName(winner.grade);
         document.getElementById('res-name').innerText = winner.name;
         card.style.display = 'flex';
-        confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 }, colors: ['#00d2ff', '#ffffff'] });
+        confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
         if (history.length % 3 === 0) document.getElementById('booth-btn').style.display = 'block';
     }
 
@@ -214,7 +187,8 @@
         document.getElementById('open-btn').style.visibility = 'visible';
         document.getElementById('title-text').style.opacity = '1';
         const box = document.getElementById('box');
-        box.style.transform = "scale(1)"; box.style.opacity = "1";
+        box.style.transform = "scale(1)"; 
+        box.style.opacity = "1";
     }
 
     function showPhotoBooth() {
@@ -230,16 +204,7 @@
     }
 
     function hidePhotoBooth() { document.getElementById('photo-booth').style.display = 'none'; document.getElementById('booth-btn').style.display = 'none'; }
-    function resetData() { if(confirm("데이터를 초기화하시겠습니까?")) location.reload(); }
+    function resetData() { if(confirm("초기화?")) location.reload(); }
 </script>
-
-<style>
-    @keyframes shake {
-        0% { transform: rotate(0deg); }
-        25% { transform: rotate(-8deg); }
-        75% { transform: rotate(8deg); }
-        100% { transform: rotate(0deg); }
-    }
-</style>
 </body>
 </html>
