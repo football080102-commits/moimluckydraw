@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>교제의 밤 행운권 추첨</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --primary-blue: #00d2ff;
@@ -37,15 +38,17 @@
 
         #result-card {
             display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
-            width: 480px; height: 580px; background: linear-gradient(145deg, #001f4d, #000);
+            width: 480px; height: 620px; background: linear-gradient(145deg, #001f4d, #000);
             border: 3px solid var(--primary-blue); border-radius: 40px; box-shadow: 0 0 100px rgba(0, 210, 255, 0.6); z-index: 1000;
             flex-direction: column; justify-content: center; align-items: center;
         }
 
-        #res-name { font-size: 5.5rem; font-weight: 900; color: white; margin: 20px 0; text-shadow: 0 0 20px var(--primary-blue); }
+        #res-name { font-size: 5.5rem; font-weight: 900; color: white; margin: 15px 0; text-shadow: 0 0 20px var(--primary-blue); }
         #flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 1500; }
-        .btn-main { background: var(--deep-blue); color: white; border: none; padding: 15px 50px; font-size: 1.5rem; border-radius: 50px; cursor: pointer; margin-top: 25px; transition: 0.3s; }
-        .btn-main:hover { transform: scale(1.1); background: var(--primary-blue); color: black; }
+        
+        .btn-main { background: var(--deep-blue); color: white; border: none; padding: 12px 40px; font-size: 1.3rem; border-radius: 50px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .btn-main:hover { transform: scale(1.05); background: var(--primary-blue); color: black; }
+        .btn-save { background: #27ae60; font-size: 1.1rem; }
 
         @keyframes shake {
             0% { transform: rotate(0deg); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } 100% { transform: rotate(0deg); }
@@ -65,19 +68,19 @@
 <div id="main-stage">
     <div id="popup-text"></div>
     <div id="box" onclick="startDraw()">🎁</div>
-    <button class="btn-main" id="open-btn" onclick="startDraw()">추첨 시작!</button>
+    <button class="btn-main" id="open-btn" onclick="startDraw()" style="font-size:1.5rem; padding:15px 50px;">추첨 시작!</button>
 
     <div id="result-card">
         <div id="res-unit" style="color:var(--primary-blue); font-size: 1.8rem;"></div>
-        <div id="res-grade" style="margin:15px 0; font-size: 2.2rem;"></div>
+        <div id="res-grade" style="margin:10px 0; font-size: 2.2rem;"></div>
         <div id="res-name"></div>
-        <div style="font-size:1.5rem; color:#aaa; margin-top: 15px;">당첨을 축하합니다!</div>
-        <button onclick="closeResult()" class="btn-main" style="font-size:1.3rem; padding:12px 45px;">닫기</button>
+        <div style="font-size:1.4rem; color:#aaa; margin-bottom: 20px;">당첨을 축하합니다!</div>
+        <button onclick="saveAsImage()" class="btn-main btn-save">📸 결과 저장 (포토부스)</button>
+        <button onclick="closeResult()" class="btn-main">닫기</button>
     </div>
 </div>
 
 <script>
-    // ★★★ 아래 [ ] 사이에 새로운 명단을 복사해서 넣으세요 ★★★
     const rawData = [
         { "grade": 6, "class": 1, "name": "김지성" }, { "grade": 4, "class": 1, "name": "김승하" }, { "grade": 4, "class": 1, "name": "김유하" }, { "grade": 4, "class": 1, "name": "박효진" },
         { "grade": 3, "class": 1, "name": "김단비" }, { "grade": 3, "class": 1, "name": "김태건" }, { "grade": 3, "class": 1, "name": "정윤서" }, { "grade": 2, "class": 1, "name": "김윤서" },
@@ -108,9 +111,11 @@
         if (participants.length === 0) return alert("추첨 완료!");
         if (document.getElementById('result-card').style.display === 'flex') return;
 
-        sndDrum.loop = true;
-        sndDrum.currentTime = 0;
-        sndDrum.play();
+        sndDrum.loop = false;
+            setTimeout(() => {
+            sndDrum.currentTime = 0;
+            sndDrum.play();
+        }, 1000);
 
         document.getElementById('open-btn').style.visibility = 'hidden';
         document.getElementById('title-text').style.opacity = '0.2';
@@ -120,8 +125,8 @@
         
         box.style.animation = "shake 0.25s infinite"; 
 
-        setTimeout(() => showStep(`${winner.class}분임`), 700);
-        setTimeout(() => showStep(getGradeName(winner.grade)), 2000);
+        setTimeout(() => showStep(`${winner.class}분임`), 800);
+        setTimeout(() => showStep(getGradeName(winner.grade)), 2300);
 
         setTimeout(() => {
             box.style.animation = "none"; 
@@ -132,8 +137,7 @@
                     const flash = document.getElementById('flash');
                     flash.style.opacity = "1"; 
                     
-                    sndDrum.pause();
-                    sndFanfare.play();
+                    sndFanfare.play(); // 팡파르 재생
 
                     setTimeout(() => {
                         flash.style.opacity = "0";
@@ -142,17 +146,18 @@
                     }, 200);
                 }, 1000); 
             }, 50);
-        }, 3200);
+        }, 4000); // 전체 대기 시간을 약간 늘림
     }
 
     function showStep(text) {
         const el = document.getElementById('popup-text');
         el.innerText = text;
+        // duration을 1.6s -> 2.5s로 늘려 더 천천히 지나가게 함
         el.animate([
             {transform:'translate(-50%, 30%)', opacity:0}, 
             {transform:'translate(-50%, -50%)', opacity:1, offset:0.2}, 
             {transform:'translate(-50%, -130%)', opacity:0}
-        ], {duration: 1600, fill: 'forwards'});
+        ], {duration: 2500, fill: 'forwards'});
     }
 
     function showResult(winner) {
@@ -164,6 +169,26 @@
         
         confetti({ particleCount: 180, angle: 60, spread: 80, origin: { x: 0, y: 0.8 } });
         confetti({ particleCount: 180, angle: 120, spread: 80, origin: { x: 1, y: 0.8 } });
+    }
+
+    // 포토부스 기능 (이미지 저장)
+    function saveAsImage() {
+        const card = document.getElementById('result-card');
+        const name = document.getElementById('res-name').innerText;
+        
+        // 버튼들을 잠시 숨김 (이미지에 안 나오게)
+        const buttons = card.querySelectorAll('button');
+        buttons.forEach(b => b.style.display = 'none');
+
+        html2canvas(card, { backgroundColor: '#000' }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `당첨자_${name}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+            
+            // 버튼 복구
+            buttons.forEach(b => b.style.display = 'block');
+        });
     }
 
     function closeResult() {
